@@ -1,0 +1,45 @@
+{
+  "name": "default",
+  "cmd": "love",
+  "args": [ ".", "--debug", "--all-servers" ],
+  "sh": false,
+  "cwd": "{PROJECT_PATH}",
+  "targets": {
+     "windows": {
+      "cmd": "bin/love",
+      "args": [ ".", "--debug" ],
+      "sh": false,
+      "cwd": "{PROJECT_PATH}"
+    },
+    "windows-server": {
+      "cmd": "bin/love",
+      "args": [ ".", "--debug", "--all-servers" ],
+      "sh": false,
+      "cwd": "{PROJECT_PATH}"
+     },
+    "windows-headless": {
+      "cmd": "bin/love",
+      "args": [ ".", "--debug", "--headless", "--all-servers" ],
+      "sh": false,
+      "cwd": "{PROJECT_PATH}"
+    },
+    "linux": {
+      "cmd": "/home/colby/src/love/src/love",
+      "args": [ ".", "--debug" ],
+      "sh": false,
+      "cwd": "{PROJECT_PATH}"
+    },
+    "linux-server": {
+      "cmd": "/home/colby/src/love/src/love",
+      "args": [ ".", "--debug", "--all-servers" ],
+      "sh": false,
+      "cwd": "{PROJECT_PATH}"
+    },
+    "linux-headless": {
+      "cmd": "/home/colby/src/love/src/love",
+      "args": [ ".", "--debug", "--headless", "--all-servers" ],
+      "sh": false,
+      "cwd": "{PROJECT_PATH}"
+    }
+  }
+}
