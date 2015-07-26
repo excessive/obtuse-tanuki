@@ -97,10 +97,7 @@ return function(camera)
 				entity.orientation = cpml.quat(self.camera.direction.x, self.camera.direction.y, self.camera.direction.z, 0)
 				-- entity.orientation = cpml.mat4.from_direction(self.camera.direction, self.camera.up):to_quat():conjugate()
 			end
-
-			local speed = 1
-						local test = cpml.quat(0, 0, 1, 0)--debug_arrow.orientation * cpml.quat.rotate(speed*dt, cpml.vec3 { 1, 0, 0 })
-			
+			-- hook up the debug-arrows orientation to the cameras orientation
 			debug_arrow.orientation = camera.orientation
 
 			self.camera:update(dt)
