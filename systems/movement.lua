@@ -99,7 +99,9 @@ return function(camera)
 			end
 
 			local speed = 1
-			debug_arrow.orientation = entity.orientation:inverse()--debug_arrow.orientation * cpml.quat.rotate(speed*dt, cpml.vec3 { 1, 0, 0 })
+						local test = cpml.quat(0, 0, 1, 0)--debug_arrow.orientation * cpml.quat.rotate(speed*dt, cpml.vec3 { 1, 0, 0 })
+			
+			debug_arrow.orientation = camera.orientation
 
 			self.camera:update(dt)
 		end

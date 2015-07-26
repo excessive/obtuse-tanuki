@@ -40,6 +40,7 @@ end
 function Camera:move(vector, speed)
 	local side    = self.direction:cross(self.up)
 	self.position = self.position + vector.x * side:normalize() * speed
+
 	self.position = self.position + vector.y * self.direction:normalize() * speed
 	self.position = self.position + vector.z * self.up:normalize() * speed
 end
@@ -50,35 +51,13 @@ function Camera:move_to(vector)
 	self.position.z = vector.z
 end
 
+-- TODO: API WARNING: rotateXY should probably be rotate_xy or rotate_XY
 function Camera:rotateXY(mx, my)
-	-- local function rotate_camera(view, angle, axis)
-	-- 	local temp = cpml.quat(
-	-- 		axis.x * math.sin(angle/2),
-	-- 		axis.y * math.sin(angle/2),
-	-- 		axis.z * math.sin(angle/2),
-	-- 		math.cos(angle/2)
-	-- 	)
-	--
-	-- 	local quat_view = cpml.quat(
-	-- 		view.x,
-	-- 		view.y,
-	-- 		view.z,
-	-- 		0
-	-- 	)
-	--
-	-- 	local result = (temp * quat_view) * temp:conjugate()
-	-- 	view.x = result.x
-	-- 	view.y = result.y
-	-- 	view.z = result.z
-	-- end
-
-	local w, h = love.graphics.getDimensions()
-
 	local mouse_direction = {
 		x = math.rad(mx / self.mouse_sensitivity),
 		y = math.rad(my / self.mouse_sensitivity)
 	}
-
+	--print("mouse move in radians: " .. tostring(mouse_direction.x) .. tostring(mouse_direction.y))
 	self.current_pitch = self.current_pitch + mouse_direction.y
 
 	-- don't rotate up/down more than self.pitch_limit
@@ -94,18 +73,22 @@ function Camera:rotateXY(mx, my)
 	local axis = self.direction:cross(self.up)
 	axis = axis:normalize()
 
-	-- print(axis, self.orientation)
+	-- NB: For quaternions a, b, a*b means "first apply rotation a, then apply rotation b".
+	-- NB: This is the reverse of how matrices are applied.
 
-	-- important: y, then x
-	self.orientation = self.orientation * cpml.quat.rotate(mouse_direction.y, axis)
-	self.orientation = self.orientation * cpml.quat.rotate(mouse_direction.x, self.up)
+	-- First, we apply a left/right rotation.
+	-- NB: "self.up" is somewhat misleading. "self.up" is really just the world up vector, it is
+	-- NB: independent of the cameras pitch. Since left/right rotation is around the worlds up-vector
+	-- NB: rather than around the cameras up-vector, it always has to be applied first.
+	self.orientation = cpml.quat.rotate(mouse_direction.x, self.up) * self.orientation
 
-	local d = self.orientation:inverse()
-	self.direction = d * cpml.vec3(0, 1, 0)
-	-- print(self.direction, self.orientation)
-	-- self.direction = cpml.vec3(d.x, d.y, d.z)
-	-- rotate_camera(self.direction, mouse_direction.y, axis)
-	-- rotate_camera(self.direction, mouse_direction.x, self.up)
+	-- Next, we apply up/down rotation.
+	-- up/down rotation is applied after any other rotation (so that other rotations are not affected by it),
+	-- hence we post-multiply it.
+	self.orientation = self.orientation * cpml.quat.rotate(mouse_direction.y, cpml.vec3(1, 0, 0))
+
+	-- Apply rotation to camera direction
+	self.direction = self.orientation * cpml.vec3(0, 1, 0)
 end
 
 -- Figure out the view matrix
