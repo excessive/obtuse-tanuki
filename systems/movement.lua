@@ -91,11 +91,10 @@ return function(camera)
 
 			if not console.visible and love.window.hasFocus() and love.mouse.getRelativeMode() then
 				local state = Gamestate.current()
-				self.camera:rotateXY(state.dx, state.dy)
+				self.camera:rotate_xy(state.dx, state.dy)
 				state.dx = 0
 				state.dy = 0
-				entity.orientation = cpml.quat(self.camera.direction.x, self.camera.direction.y, self.camera.direction.z, 0)
-				-- entity.orientation = cpml.mat4.from_direction(self.camera.direction, self.camera.up):to_quat():conjugate()
+				entity.orientation = camera.orientation * cpml.quat.rotate(math.pi, cpml.vec3(0, 0, 1))
 			end
 			-- hook up the debug-arrows orientation to the cameras orientation
 			debug_arrow.orientation = camera.orientation

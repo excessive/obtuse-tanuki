@@ -20,10 +20,10 @@ function Camera:init(position)
 	self.up          = cpml.vec3(0, 0, 1)
 
 	-- up/down limit (radians)
-	self.pitch_limit_up    = math.pi / 2
-	self.pitch_limit_down  = math.pi / 2
+	self.pitch_limit_up    = math.pi / 2.25
+	self.pitch_limit_down  = math.pi / 2.25
 	self.current_pitch     = 0
-	self.mouse_sensitivity = 15 -- higher = slower
+	self.mouse_sensitivity = 1 / 15 -- radians/px
 
 	-- position vector to track
 	self.tracking = false
@@ -52,10 +52,10 @@ function Camera:move_to(vector)
 end
 
 -- TODO: API WARNING: rotateXY should probably be rotate_xy or rotate_XY
-function Camera:rotateXY(mx, my)
+function Camera:rotate_xy(mx, my)
 	local mouse_direction = {
-		x = math.rad(mx / self.mouse_sensitivity),
-		y = math.rad(my / self.mouse_sensitivity)
+		x = math.rad(mx * self.mouse_sensitivity),
+		y = math.rad(my * self.mouse_sensitivity)
 	}
 	--print("mouse move in radians: " .. tostring(mouse_direction.x) .. tostring(mouse_direction.y))
 	self.current_pitch = self.current_pitch + mouse_direction.y
